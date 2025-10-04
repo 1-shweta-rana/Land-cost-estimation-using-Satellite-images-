@@ -31,28 +31,14 @@
         },
         {
             "parameters": {
-                "batchSize": 1,
-                "options": {}
-            },
-            "name": "Split In Batches",
-            "type": "n8n-nodes-base.splitInBatches",
-            "typeVersion": 1,
-            "position": [
-                816,
-                -64
-            ],
-            "id": "5e4bf663-b391-42e4-a9bf-e678aca5c186"
-        },
-        {
-            "parameters": {
-                "url": "=https://prod-be.1acre.in/lands/{{ $json.land_ids[0] }}/",
+                "url": "=https://prod-be.1acre.in/lands/{{ $json.land_ids }}/\n",
                 "options": {}
             },
             "name": "Fetch Land Details",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 1,
             "position": [
-                1024,
+                1472,
                 256
             ],
             "id": "6f50fee9-489e-49b9-baae-346dada359be"
@@ -257,11 +243,63 @@
             "type": "n8n-nodes-base.dataTable",
             "typeVersion": 1,
             "position": [
-                1264,
-                -32
+                1696,
+                -96
             ],
             "id": "218f5bc5-4270-4f42-b175-128018d7cc82",
             "name": "Insert row1"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                976,
+                256
+            ],
+            "id": "bcfb53fa-35cd-4f17-a517-20c44565453d",
+            "name": "Loop Over Items"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.noOp",
+            "name": "Replace Me",
+            "typeVersion": 1,
+            "position": [
+                1776,
+                320
+            ],
+            "id": "2e9f4803-612f-4295-aa1d-d0f8f61232a9"
+        },
+        {
+            "parameters": {
+                "amount": 7
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1184,
+                -80
+            ],
+            "id": "8f962483-414f-48a4-acc8-72b6cd0c023c",
+            "name": "Wait",
+            "webhookId": "4cfa862f-4132-423b-b8d9-36579d1610fa"
+        },
+        {
+            "parameters": {
+                "language": "python",
+                "pythonCode": "# Get the array of land_ids from the first item\nland_ids = _input.first().json[\"land_ids\"]\n\n# Transform each land_id into its own item object\nreturn [\n    {\"json\": {\"land_ids\": id}}\n    for id in land_ids\n]\n"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                784,
+                -48
+            ],
+            "id": "8062b95d-69a1-488e-9be2-9a8be32e3b3c",
+            "name": "Code in Python (Beta)"
         }
     ],
     "pinData": {},
@@ -281,18 +319,7 @@
             "main": [
                 [
                     {
-                        "node": "Split In Batches",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Split In Batches": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Land Details",
+                        "node": "Code in Python (Beta)",
                         "type": "main",
                         "index": 0
                     }
@@ -312,7 +339,58 @@
         },
         "Insert row1": {
             "main": [
-                []
+                [
+                    {
+                        "node": "Replace Me",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Over Items": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Replace Me": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Land Details",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Code in Python (Beta)": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
             ]
         }
     },
@@ -320,7 +398,7 @@
     "settings": {
         "executionOrder": "v1"
     },
-    "versionId": "e3948b9f-9cf0-437d-b03a-a449d12a0aa4",
+    "versionId": "dcd6de49-f9f1-4253-9e20-c93b8df57ad0",
     "meta": {
         "templateCredsSetupCompleted": true,
         "instanceId": "5bbb4b02be20ebf642f5d70e921b29e36902f3f415fafdbc109dae26e5edba6c"
