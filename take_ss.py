@@ -136,13 +136,3 @@ def extract_and_save_with_id(driver:webdriver.Chrome, land_id:int,  data:pandas.
 
     except Exception as e:
         print("Error: ","\n", f"{e}","\n",f"{land_id=}")
-
-    
-
-
-    
-
-
-
-
-
