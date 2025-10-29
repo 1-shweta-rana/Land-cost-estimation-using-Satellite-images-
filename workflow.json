@@ -1,408 +1,412 @@
 {
-    "name": "land",
-    "nodes": [
-        {
-            "parameters": {},
-            "name": "Manual Trigger",
-            "type": "n8n-nodes-base.manualTrigger",
-            "typeVersion": 1,
-            "position": [
-                384,
-                -64
-            ],
-            "id": "c71edb4a-97af-4fd7-acc3-4778cfb4216d"
-        },
-        {
-            "parameters": {
-                "url": "https://raw.githubusercontent.com/1-shweta-rana/Land-cost-estimation-using-Satellite-images-/main/land_ids.json",
-                "options": {},
-                "queryParametersUi": {
-                    "parameter": []
-                }
-            },
-            "name": "Fetch Land IDs from GitHub",
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 1,
-            "position": [
-                608,
-                240
-            ],
-            "id": "1882457c-763e-444f-abdf-38b749983340"
-        },
-        {
-            "parameters": {
-                "url": "=https://prod-be.1acre.in/lands/{{ $json.land_ids }}/\n",
-                "options": {}
-            },
-            "name": "Fetch Land Details",
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 1,
-            "position": [
-                1472,
-                256
-            ],
-            "id": "6f50fee9-489e-49b9-baae-346dada359be"
-        },
-        {
-            "parameters": {
-                "dataTableId": {
-                    "__rl": true,
-                    "value": "f6kQAQCxANDL65kM",
-                    "mode": "list",
-                    "cachedResultName": "Land data",
-                    "cachedResultUrl": "/projects/kfnAnnhZzLK34crr/datatables/f6kQAQCxANDL65kM"
-                },
-                "columns": {
-                    "mappingMode": "defineBelow",
-                    "value": {
-                        "Land_ID": "={{ $json.id }}",
-                        "State": "={{ $json.division_info[0].name }}",
-                        "District": "={{ $json.division_info[1].name }}",
-                        "Village": "={{ $json.division_info[3].name }}",
-                        "Latitude": "={{ $json.lat }}",
-                        "Longitude": "={{ $json.long }}",
-                        "Mandal": "={{ $json.division_info[2].name }}",
-                        "Land_Zone_Data": "={{ Object.values($json[\"land_zone_data\"][0]).filter(v => v === true).length }}",
-                        "Fencing": "={{ $json.fencing }}",
-                        "Soil_Type": "={{ $json.soil_type }}",
-                        "Electricity": "={{ $json.electricity }}",
-                        "Price_per_Acre": "={{ ($json[\"land_price\"][\"price_per_acre_crore\"][\"crore\"] || 0) + (($json[\"land_price\"][\"price_per_acre_crore\"][\"lakh\"] || 0) / 100) }}",
-                        "Water_Source_Data": "={{ \n  (\n    ($json[\"water_source_data\"][0][\"well\"] ? 0.2 : 0) +\n    ($json[\"water_source_data\"][0][\"canal\"] ? 0.5 : 0) +\n    ($json[\"water_source_data\"][0][\"drip\"] ? 0.3 : 0) +\n    ($json[\"water_source_data\"][0][\"sprinkler\"] ? 0.1 : 0) +\n    ($json[\"water_source_data\"][0][\"bore_well\"] ? 0.6 : 0) +\n    ($json[\"water_source_data\"][0][\"stream\"] ? 0.4 : 0)\n  ) / 1.7\n}}\n",
-                        "Approach_Road_Length": "={{ $json.approach_road_length }}",
-                        "Approach_Road_Type": "={{ $json.approach_road_type }}",
-                        "Status": "={{ $json.status }}"
-                    },
-                    "matchingColumns": [],
-                    "schema": [
-                        {
-                            "id": "Land_ID",
-                            "displayName": "Land_ID",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "number",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "State",
-                            "displayName": "State",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "District",
-                            "displayName": "District",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Mandal",
-                            "displayName": "Mandal",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Village",
-                            "displayName": "Village",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Latitude",
-                            "displayName": "Latitude",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "number",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Longitude",
-                            "displayName": "Longitude",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "number",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Land_Zone_Data",
-                            "displayName": "Land_Zone_Data",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Soil_Type",
-                            "displayName": "Soil_Type",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Electricity",
-                            "displayName": "Electricity",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Approach_Road_Length",
-                            "displayName": "Approach_Road_Length",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "number",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Approach_Road_Type",
-                            "displayName": "Approach_Road_Type",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Status",
-                            "displayName": "Status",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Fencing",
-                            "displayName": "Fencing",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Price_per_Acre",
-                            "displayName": "Price_per_Acre",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        },
-                        {
-                            "id": "Water_Source_Data",
-                            "displayName": "Water_Source_Data",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "readOnly": false,
-                            "removed": false
-                        }
-                    ],
-                    "attemptToConvertTypes": false,
-                    "convertFieldsToString": false
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.dataTable",
-            "typeVersion": 1,
-            "position": [
-                1696,
-                -96
-            ],
-            "id": "218f5bc5-4270-4f42-b175-128018d7cc82",
-            "name": "Insert row1"
-        },
-        {
-            "parameters": {
-                "options": {}
-            },
-            "type": "n8n-nodes-base.splitInBatches",
-            "typeVersion": 3,
-            "position": [
-                976,
-                256
-            ],
-            "id": "bcfb53fa-35cd-4f17-a517-20c44565453d",
-            "name": "Loop Over Items"
-        },
-        {
-            "parameters": {},
-            "type": "n8n-nodes-base.noOp",
-            "name": "Replace Me",
-            "typeVersion": 1,
-            "position": [
-                1776,
-                320
-            ],
-            "id": "2e9f4803-612f-4295-aa1d-d0f8f61232a9"
-        },
-        {
-            "parameters": {
-                "amount": 7
-            },
-            "type": "n8n-nodes-base.wait",
-            "typeVersion": 1.1,
-            "position": [
-                1184,
-                -80
-            ],
-            "id": "8f962483-414f-48a4-acc8-72b6cd0c023c",
-            "name": "Wait",
-            "webhookId": "4cfa862f-4132-423b-b8d9-36579d1610fa"
-        },
-        {
-            "parameters": {
-                "language": "python",
-                "pythonCode": "# Get the array of land_ids from the first item\nland_ids = _input.first().json[\"land_ids\"]\n\n# Transform each land_id into its own item object\nreturn [\n    {\"json\": {\"land_ids\": id}}\n    for id in land_ids\n]\n"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                784,
-                -48
-            ],
-            "id": "8062b95d-69a1-488e-9be2-9a8be32e3b3c",
-            "name": "Code in Python (Beta)"
+  "name": "land",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -16
+      ],
+      "id": "c71edb4a-97af-4fd7-acc3-4778cfb4216d"
+    },
+    {
+      "parameters": {
+        "url": "=https://prod-be.1acre.in/lands/{{ $json.land_ids }}/\n",
+        "options": {}
+      },
+      "name": "Fetch Land Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        -96
+      ],
+      "id": "6f50fee9-489e-49b9-baae-346dada359be",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/1-shweta-rana/Land-cost-estimation-using-Satellite-images-/main/land_ids.json",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": []
         }
-    ],
-    "pinData": {},
-    "connections": {
-        "Manual Trigger": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Land IDs from GitHub",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
+      },
+      "name": "Fetch Land ID's",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        -16
+      ],
+      "id": "1882457c-763e-444f-abdf-38b749983340"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Get the array of land_ids from the first item\nland_ids = _input.first().json[\"land_ids\"]\n\n# Transform each land_id into its own item object\nreturn [\n    {\"json\": {\"land_ids\": id}}\n    for id in land_ids\n]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -32
+      ],
+      "id": "8062b95d-69a1-488e-9be2-9a8be32e3b3c",
+      "name": "Restructure land id's"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1472,
+        -32
+      ],
+      "id": "bcfb53fa-35cd-4f17-a517-20c44565453d",
+      "name": "Loop over Land ID's"
+    },
+    {
+      "parameters": {
+        "amount": 7
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1696,
+        -96
+      ],
+      "id": "8f962483-414f-48a4-acc8-72b6cd0c023c",
+      "name": "Wait before sending next request",
+      "webhookId": "4cfa862f-4132-423b-b8d9-36579d1610fa"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "f6kQAQCxANDL65kM",
+          "mode": "list",
+          "cachedResultName": "Land data",
+          "cachedResultUrl": "/projects/kfnAnnhZzLK34crr/datatables/f6kQAQCxANDL65kM"
         },
-        "Fetch Land IDs from GitHub": {
-            "main": [
-                [
-                    {
-                        "node": "Code in Python (Beta)",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Land_ID": "={{ $json.id }}",
+            "State": "={{ $json.division_info[0].name }}",
+            "District": "={{ $json.division_info[1].name }}",
+            "Village": "={{ $json.division_info[3].name }}",
+            "Latitude": "={{ $json.lat }}",
+            "Longitude": "={{ $json.long }}",
+            "Mandal": "={{ $json.division_info[2].name }}",
+            "Land_Zone_Data": "={{ Object.values($json[\"land_zone_data\"][0]).filter(v => v === true).length }}",
+            "Fencing": "={{ $json.fencing }}",
+            "Soil_Type": "={{ $json.soil_type }}",
+            "Electricity": "={{ $json.electricity }}",
+            "Price_per_Acre": "={{ ($json[\"land_price\"][\"price_per_acre_crore\"][\"crore\"] || 0) + (($json[\"land_price\"][\"price_per_acre_crore\"][\"lakh\"] || 0) / 100) }}",
+            "Water_Source_Data": "={{ \n  (\n    ($json[\"water_source_data\"][0][\"well\"] ? 0.2 : 0) +\n    ($json[\"water_source_data\"][0][\"canal\"] ? 0.5 : 0) +\n    ($json[\"water_source_data\"][0][\"drip\"] ? 0.3 : 0) +\n    ($json[\"water_source_data\"][0][\"sprinkler\"] ? 0.1 : 0) +\n    ($json[\"water_source_data\"][0][\"bore_well\"] ? 0.6 : 0) +\n    ($json[\"water_source_data\"][0][\"stream\"] ? 0.4 : 0)\n  ) / 1.7\n}}\n",
+            "Approach_Road_Length": "={{ $json.approach_road_length }}",
+            "Approach_Road_Type": "={{ $json.approach_road_type }}",
+            "Status": "={{ $json.status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Land_ID",
+              "displayName": "Land_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "District",
+              "displayName": "District",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mandal",
+              "displayName": "Mandal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Village",
+              "displayName": "Village",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Latitude",
+              "displayName": "Latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Longitude",
+              "displayName": "Longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Land_Zone_Data",
+              "displayName": "Land_Zone_Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Soil_Type",
+              "displayName": "Soil_Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Electricity",
+              "displayName": "Electricity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Approach_Road_Length",
+              "displayName": "Approach_Road_Length",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Approach_Road_Type",
+              "displayName": "Approach_Road_Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fencing",
+              "displayName": "Fencing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Price_per_Acre",
+              "displayName": "Price_per_Acre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Water_Source_Data",
+              "displayName": "Water_Source_Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
         },
-        "Fetch Land Details": {
-            "main": [
-                [
-                    {
-                        "node": "Insert row1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Insert row1": {
-            "main": [
-                [
-                    {
-                        "node": "Replace Me",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Loop Over Items": {
-            "main": [
-                [],
-                [
-                    {
-                        "node": "Wait",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Replace Me": {
-            "main": [
-                [
-                    {
-                        "node": "Loop Over Items",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Wait": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Land Details",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Code in Python (Beta)": {
-            "main": [
-                [
-                    {
-                        "node": "Loop Over Items",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
+        "options": {
+          "optimizeBulk": false
         }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        2144,
+        -96
+      ],
+      "id": "218f5bc5-4270-4f42-b175-128018d7cc82",
+      "name": "Insert into DB",
+      "onError": "continueRegularOutput"
     },
-    "active": false,
-    "settings": {
-        "executionOrder": "v1"
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Get next ID",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        -32
+      ],
+      "id": "2e9f4803-612f-4295-aa1d-d0f8f61232a9"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Land ID's",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
-    "versionId": "dcd6de49-f9f1-4253-9e20-c93b8df57ad0",
-    "meta": {
-        "templateCredsSetupCompleted": true,
-        "instanceId": "5bbb4b02be20ebf642f5d70e921b29e36902f3f415fafdbc109dae26e5edba6c"
+    "Fetch Land Details": {
+      "main": [
+        [
+          {
+            "node": "Insert into DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
-    "id": "fbBLZNnUOz02cgsV",
-    "tags": []
+    "Fetch Land ID's": {
+      "main": [
+        [
+          {
+            "node": "Restructure land id's",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restructure land id's": {
+      "main": [
+        [
+          {
+            "node": "Loop over Land ID's",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop over Land ID's": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait before sending next request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait before sending next request": {
+      "main": [
+        [
+          {
+            "node": "Fetch Land Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into DB": {
+      "main": [
+        [
+          {
+            "node": "Get next ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get next ID": {
+      "main": [
+        [
+          {
+            "node": "Loop over Land ID's",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2d409459-5c28-45cd-872a-c2b297d80768",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5bbb4b02be20ebf642f5d70e921b29e36902f3f415fafdbc109dae26e5edba6c"
+  },
+  "id": "fbBLZNnUOz02cgsV",
+  "tags": []
 }
