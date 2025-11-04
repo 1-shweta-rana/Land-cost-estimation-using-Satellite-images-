@@ -36,7 +36,7 @@ def extract_and_save_with_id(driver:webdriver.Chrome, land_id:int,  data:pandas.
 
         driver.get(url)
         time.sleep(5)
-        ELEMENTS_TO_HIDE_JS = ELEMENTS_TO_HIDE_JS = """
+        ELEMENTS_TO_HIDE_JS = """
 
     function hideNonMapElements() {
         // Get the map canvas first
