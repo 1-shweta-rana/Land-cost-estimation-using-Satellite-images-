@@ -1,7 +1,7 @@
-import pandas
+import pandas as pd
 import json
 
-def extract_lat_long_from_data(dataset: pandas.DataFrame, land_id:int) -> dict:
+def extract_lat_long_from_data(dataset: pd.DataFrame, land_id:int) -> dict:
 
     row = dataset.loc[dataset["Land_ID"] == land_id, ["Latitude", "Longitude"]]
     res = dict()
@@ -26,4 +26,9 @@ def extract_ids(input_file:str = "./land_ids.json") -> list:
         land_ids = json.load(f)
     land_ids_list = list(set(land_ids["land_ids"]))
     return land_ids_list
+
+def preprocess_data(dataset: pd.DataFrame) -> None:
+
+    # Cleaning (dropping nulls)
+    
     
