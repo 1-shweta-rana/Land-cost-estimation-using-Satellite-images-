@@ -1,6 +1,7 @@
 import pandas as pd
 import json
-
+import os
+from transformers import AutoModel, AutoImageProcessor
 def extract_lat_long_from_data(dataset: pd.DataFrame, land_id:int) -> dict:
 
     row = dataset.loc[dataset["Land_ID"] == land_id, ["Latitude", "Longitude"]]
@@ -27,8 +28,25 @@ def extract_ids(input_file:str = "./land_ids.json") -> list:
     land_ids_list = list(set(land_ids["land_ids"]))
     return land_ids_list
 
+def get_model_and_processor(model_name: str, save_path : str):
+    
+    if not os.path.exists(save_path):
+        print("Can't find transformer locally...")
+        model = AutoModel.from_pretrained(model_name)
+        processor = AutoImageProcessor.from_pretrained(model_name)
+        
+        model.save_pretrained(save_path)
+        processor.save_pretrained(save_path)
+        print(f"Saved model to {save_path}")
+    else:
+        model = AutoModel.from_pretrained(save_path)
+        processor = AutoImageProcessor.from_pretrained(save_path)
+
+    return model,processor
+
+
 def preprocess_data(dataset: pd.DataFrame) -> None:
 
     # Cleaning (dropping nulls)
-    
+
     
