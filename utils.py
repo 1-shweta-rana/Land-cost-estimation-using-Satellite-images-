@@ -54,7 +54,7 @@ def find_and_attach(image_embedding: torch.Tensor, dataset: pd.DataFrame, image)
     image_id = image.split(".")[0]
     row = dataset["Land_ID"] == image_id
     embedding_np = image_embedding.cpu().numpy() if image_embedding.is_cuda else image_embedding.numpy()
-    dataset.loc(row, 'embedding') = [embedding_np]
+    dataset.loc[row, 'embedding'] = [embedding_np]
 
 def attach_embeddings_to_data(image_path: str, dataset: pd.DataFrame, model_name: str, save_path: str) -> None:
 
@@ -64,8 +64,12 @@ def attach_embeddings_to_data(image_path: str, dataset: pd.DataFrame, model_name
 
         curr_image_path = os.path.join(image_path, image)
         curr_image = Image.open(curr_image_path)
-        inputs = processor(curr_image, return_tensors = "pt")
-        
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        model = model.to(device)
+        inputs = processor(curr_image, return_tensors = "pt").to(device)
+
         with torch.no_grad():
             outputs = model(**inputs)
         
