@@ -47,6 +47,11 @@ def get_model_and_processor(model_name: str, save_path : str):
 
 def preprocess_data(dataset: pd.DataFrame) -> None:
 
-    # Cleaning (dropping nulls)
-
+    #Cleaning (dropping nulls)
+    #remove rows without land_id
+    #check for road type if its affecting the price 
+    #check for null values in soil type etc, fill missing values or remove
+    #come up with most affecting attributes and preprocess accordingly 
+    #remove if any unwanted attribute present 
+    
     
