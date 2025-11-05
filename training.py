@@ -30,7 +30,7 @@ x_train, x_valid, y_train, y_valid = train_test_split(X, y, stratify=y)
 
 hyperparams = {
     "n_estimators":100,
-    "device":"cuda" if torch.cuda.is_available() else "cpu"
+    "tree_method": "gpu_hist" if torch.cuda.is_available() else "hist"
 }
 
 model = XGBRegressor(**hyperparams)
