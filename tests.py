@@ -1,15 +1,16 @@
 import pandas as pd
 import os
 from PIL import Image
+# from utils import attach_embeddings_to_data, pre
+import torch
+# dataset = pd.read_csv("./dataset1.csv")
 
-dataset = pd.read_csv("./dataset1.csv")
-print(dataset.columns)
-image_path = './images'
+# transformer_model_name = 'facebook/dinov2-small'
+# save_path = './saved_transformer'
+# image_path = './images'
 
-for image in os.listdir(image_path):
+# attach_embeddings_to_data(image_path, dataset, transformer_model_name, save_path)
 
-    curr_image_path = os.path.join(image_path, image)
-    curr_image = Image.open(curr_image_path)
-    image_id = image.split(".")[0]
-    print(image_id)
-    # inputs = processor(curr_image, return_tensors = "pt")
+# print(dataset.head())
+
+print(torch.cuda.is_available())
