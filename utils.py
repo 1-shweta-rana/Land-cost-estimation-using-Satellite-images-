@@ -9,6 +9,7 @@ from sklearn.preprocessing import OrdinalEncoder,OneHotEncoder, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 import re
+from math import radians, sin, cos, sqrt, atan2
 
 def extract_lat_long_from_data(dataset: pd.DataFrame, land_id:int) -> dict:
 
@@ -145,6 +146,16 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 def sanitize_feature_names(columns):
     return [re.sub(r"[\[\]<>]", "_", c) for c in columns]
 
+
+
+def haversine(lat1, lon1, lat2, lon2):
+    """Compute the Haversine distance (km) between two lat/lon points."""
+    R = 6371
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+    a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon/2)**2
+    return 2 * R * atan2(sqrt(a), sqrt(1 - a)) * R
+
 def preprocess_data(dataset: pd.DataFrame):
 
     # --- CLEANING STAGE ---
@@ -163,7 +174,25 @@ def preprocess_data(dataset: pd.DataFrame):
     # --- FILL MISSING VALUES ---
     dataset["Water_Source_Data"].fillna(0, inplace=True)
     dataset["Approach_Road_Length"].fillna(10, inplace=True)
-    dataset["Soil_Type"].fillna("black", inplace=True)
+
+    missing_soil = dataset[dataset['Soil_Type'].isnull() | (dataset['Soil_Type'].astype(str).str.strip() == '')].copy()
+    known_soil = dataset[dataset['Soil_Type'].notnull() & (dataset['Soil_Type'].astype(str).str.strip() != '')].copy()
+
+    for idx, row in missing_soil.iterrows():
+        lat, lon = row['Latitude'], row['Longitude']
+        if pd.isna(lat) or pd.isna(lon) or known_soil.empty:
+            continue
+
+        # Compute distances safely
+        distances = known_soil.apply(
+            lambda x: haversine(lat, lon, x['Latitude'], x['Longitude']), axis=1
+        )
+        nearest_idx = distances.idxmin()
+        nearest_dist = distances.min()
+        distance_threshold: float = 6.0
+        if nearest_dist <= distance_threshold:
+            dataset.at[idx, 'Soil_Type'] = known_soil.at[nearest_idx, 'Soil_Type']
+
     dataset["Land_Zone_Data"].fillna(0, inplace=True)
     dataset["Approach_Road_Type"].fillna("kacha", inplace=True)
 
