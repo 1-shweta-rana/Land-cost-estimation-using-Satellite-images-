@@ -5,25 +5,25 @@ from transformers import AutoImageProcessor, AutoModel
 from PIL import Image
 import os
 import pandas as pd
-from utils import preprocess_data, attach_embeddings_to_data, clean_data
-from sklearn.model_selection import train_test_split
+from utils import preprocess_data, attach_embeddings_to_data
 from sklearn.metrics import mean_absolute_error
 from xgboost import XGBRegressor
 import joblib
 import re
 
-dataset = pd.read_csv('./dataset1.csv')
-dataset_cleaned = clean_data(dataset)
+# dataset_path = "./dataset2.csv"
+# dataset_cleaned = clean_data(dataset_path)
+dataset_cleaned = pd.read_csv("./dataset4.csv")
 transformer_model_name = 'facebook/dinov2-small'
 save_path = './saved_transformer'
-image_path = './images'
+image_path = './images_trial'
 
 
-attach_embeddings_to_data(image_path, dataset, transformer_model_name, save_path)
-x_train, x_valid, y_train, y_valid = preprocess_data(dataset)
+# attach_embeddings_to_data(image_path, dataset_cleaned, transformer_model_name, save_path)
+x_train, x_valid, y_train, y_valid = preprocess_data(dataset_cleaned)
 
 hyperparams = {
-    "n_estimators":200,
+    "n_estimators":100,
     "tree_method": 'hist',
     "device": "cuda" if torch.cuda.is_available() else "cpu",
     "verbosity":0

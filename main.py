@@ -3,7 +3,9 @@ import pandas as pd
 from take_ss import sel_setup, extract_and_save_with_id
 from utils import extract_ids
 
-data = pd.read_csv("./dataset1.csv")
+dataset_path = "./dataset4.csv"
+# data = clean_data(dataset_path)
+data = pd.read_csv(dataset_path)
 land_ids_list = extract_ids()
 
 if __name__ == "__main__":

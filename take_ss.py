@@ -23,13 +23,13 @@ def sel_setup()-> webdriver.Chrome:
     print("Driver setup complete")
     return driver
 
-def extract_and_save_with_id(driver:webdriver.Chrome, land_id:int,  data:pandas.DataFrame, output_dir:str = "./images/") -> None:
+def extract_and_save_with_id(driver:webdriver.Chrome, land_id:int,  data:pandas.DataFrame, output_dir:str = "./images_trial/") -> None:
     
     lat_long_dict = extract_lat_long_from_data(data, land_id)
     if not lat_long_dict:
         return
-    url = f"https://www.1acre.in/@{lat_long_dict["lat"]}-{lat_long_dict["long"]}-17m/data-!land{land_id}"
-    output_path = f"./images/{land_id}.png"
+    url = f"https://www.1acre.in/@{lat_long_dict["lat"]}-{lat_long_dict["long"]}-15m/data-!land{land_id}"
+    output_path = f"./images_trial/{land_id}.png"
 
     print(f"checking url: {url}", "\n")
     try:
