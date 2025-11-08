@@ -11,6 +11,7 @@ from sklearn.compose import ColumnTransformer
 import re
 from math import radians, sin, cos, sqrt, atan2
 
+#------------------------------DATA COLLECTION FUNCTIONS START------------------------------------
 def extract_lat_long_from_data(dataset: pd.DataFrame, land_id:int) -> dict:
 
     row = dataset.loc[dataset["Land_ID"] == land_id, ["Latitude", "Longitude"]]
@@ -36,7 +37,9 @@ def extract_ids(input_file:str = "./land_ids.json") -> list:
         land_ids = json.load(f)
     land_ids_list = list(set(land_ids["land_ids"]))
     return land_ids_list
+#------------------------------DATA COLLECTION FUNCTIONS END------------------------------------
 
+#------------------------------HF MODELS FUNCTIONS START----------------------------------------
 def get_model_and_processor(model_name: str, save_path : str):
     
     if not os.path.exists(save_path):
@@ -54,12 +57,14 @@ def get_model_and_processor(model_name: str, save_path : str):
         print(f"Successfully loaded model from {save_path}")
 
     return model,processor
+#------------------------------HF MODELS FUNCTIONS END----------------------------------------
 
+#------------------------------DATA PROCESSING FUNCTIONS START----------------------------------------
 def find_and_attach(image_embedding: torch.Tensor, dataset: pd.DataFrame, image) -> None:
 
     image_id = image.split(".")[0].strip()
     image_id = int(image_id)
-    print(image_id)
+    # print(image_id)
     embedding_np = image_embedding.cpu().numpy() if image_embedding.is_cuda else image_embedding.numpy()
 
     if embedding_np.ndim > 1:
@@ -79,7 +84,7 @@ def find_and_attach(image_embedding: torch.Tensor, dataset: pd.DataFrame, image)
                 dataset[col] = None
         
         dataset.loc[row_index, emb_cols] = embedding_1d
-        print("Added embeddings")
+        print(f"Added embeddings to {image_id}")
     else:
         print("Couldn't add embeddings")
 
@@ -189,7 +194,7 @@ def preprocess_data(dataset: pd.DataFrame):
         )
         nearest_idx = distances.idxmin()
         nearest_dist = distances.min()
-        distance_threshold: float = 6.0
+        distance_threshold: float = 50.0
         if nearest_dist <= distance_threshold:
             dataset.at[idx, 'Soil_Type'] = known_soil.at[nearest_idx, 'Soil_Type']
 
@@ -251,8 +256,8 @@ def preprocess_data(dataset: pd.DataFrame):
     print(x_train_processed.dtypes.value_counts())
     x_train_processed.columns = sanitize_feature_names(x_train_processed.columns)
     x_valid_processed.columns = sanitize_feature_names(x_valid_processed.columns)
+    
     return x_train_processed, x_valid_processed, y_train, y_valid
     
-
-
+#------------------------------DATA PROCESSING FUNCTIONS END----------------------------------------
     
