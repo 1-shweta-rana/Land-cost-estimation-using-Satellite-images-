@@ -6,10 +6,16 @@ from PIL import Image
 import os
 import pandas as pd
 from utils import preprocess_data, attach_embeddings_to_data
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, root_mean_squared_error, r2_score
 from xgboost import XGBRegressor
 import joblib
 import re
+import warnings
+import shap
+import matplotlib.pyplot as plt
+
+warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
+warnings.filterwarnings(action="ignore", category=pd.errors.SettingWithCopyWarning)
 
 # dataset_path = "./dataset2.csv"
 # dataset_cleaned = clean_data(dataset_path)
@@ -19,7 +25,7 @@ save_path = './saved_transformer'
 image_path = './images_trial'
 
 
-# attach_embeddings_to_data(image_path, dataset_cleaned, transformer_model_name, save_path)
+attach_embeddings_to_data(image_path, dataset_cleaned, transformer_model_name, save_path)
 x_train, x_valid, y_train, y_valid = preprocess_data(dataset_cleaned)
 
 hyperparams = {
@@ -53,11 +59,34 @@ else:
 
 
 preds = model.predict(x_valid)
+
 mae = mean_absolute_error(y_valid, preds)
-print(f"{mae=}")
+rmse = root_mean_squared_error(y_valid, preds)
+r2 = r2_score(y_valid, preds)
+mape = mean_absolute_percentage_error(y_valid, preds) * 100
 
+print(f"MAE: {mae:.3f}")
+print(f"RMSE: {rmse:.3f}")
+print(f"R²: {r2:.3f}")
+print(f"MAPE: {mape:.2f}%")
 
+# Extract feature importances based on average gain
+booster = model.get_booster()
+importance = booster.get_score(importance_type='gain')
 
+# Convert to DataFrame
+importance_df = (
+    pd.DataFrame(list(importance.items()), columns=["Feature", "Importance"])
+    .sort_values(by="Importance", ascending=False)
+)
+
+# Plot top 20 important features
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df["Feature"].head(20)[::-1], importance_df["Importance"].head(20)[::-1])
+plt.xlabel("Feature Importance (Gain)")
+plt.title("Top 20 Most Influential Features in Land Price Prediction")
+plt.tight_layout()
+plt.show()
 
 
 

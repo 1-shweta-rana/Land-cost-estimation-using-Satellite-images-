@@ -13,7 +13,9 @@ from math import radians, sin, cos, sqrt, atan2
 import numpy as np
 import warnings
 
+warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 warnings.filterwarnings("ignore", category=pd.errors.SettingWithCopyWarning)
+
 #------------------------------DATA COLLECTION FUNCTIONS START------------------------------------
 def extract_lat_long_from_data(dataset: pd.DataFrame, land_id:int) -> dict:
 
@@ -175,7 +177,7 @@ def preprocess_data(dataset: pd.DataFrame):
     ])
 
     num_pipeline = Pipeline([
-        ('scaler', StandardScaler())
+        ('scaler', 'passthrough')
     ])
 
     # --- COLUMN TRANSFORMER ---

@@ -11,7 +11,9 @@ dataset = pd.read_csv("./dataset4.csv")
 # print("✅ Processed dataset saved as 'processed_dataset.csv'")
 for i in dataset.columns:
     print(f"{i}: {dataset[i].dtype}")
-
+print("Rows before cleaning:", len(dataset))
+print("Missing Land_ID:", dataset["Land_ID"].isna().sum())
+print("Missing Price_per_Acre:", dataset["Price_per_Acre"].isna().sum())
 
 # transformer_model_name = 'facebook/dinov2-small'
 # save_path = './saved_transformer'
